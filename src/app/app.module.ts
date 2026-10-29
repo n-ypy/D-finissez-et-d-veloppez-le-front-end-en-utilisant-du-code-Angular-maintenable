@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -10,7 +10,7 @@ import { CountryComponent } from "./pages/country/country.component";
 @NgModule({
   declarations: [AppComponent, HomeComponent, NotFoundComponent, CountryComponent],
   imports: [BrowserModule, AppRoutingModule],
-  providers: [provideHttpClient()],
+  providers: [provideHttpClient(withXhr())],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
