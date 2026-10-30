@@ -7,8 +7,7 @@ import Chart from 'chart.js/auto';
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class HomeComponent implements OnInit {
   private olympicUrl = './assets/mock/olympic.json';
