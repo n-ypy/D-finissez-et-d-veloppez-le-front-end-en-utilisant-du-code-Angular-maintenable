@@ -69,3 +69,81 @@ Méthode : lecture de `src/app`, `ng serve`, essais dans le navigateur à 1440, 
 - Fichiers trop volumineux : aucun, le plus long fait 71 lignes. Le problème vient du mélange des responsabilités, pas de la taille.
 - Fichiers mal placés : aucun, puisque les dossiers `services/` et `components/` n'existent pas.
 - Tableau statique de données : aucun, les données viennent de `src/assets/mock/olympic.json`.
+
+## Étape 2 : nouvelle architecture
+
+### Structure cible
+
+```text
+src/app/
+├── app.constants.ts        URL des données, couleurs
+├── app.config.ts
+├── app.routes.ts
+├── components/             affichage réutilisable
+│   ├── header/             titre + indicateurs
+│   ├── line-chart/         courbe
+│   └── pie-chart/          camembert
+├── models/                 interfaces TypeScript
+│   ├── indicator.model.ts
+│   ├── olympic.model.ts
+│   └── participation.model.ts
+├── pages/                  composants liés à une route
+│   ├── country-detail/
+│   ├── dashboard/
+│   └── not-found/
+└── services/
+    └── data.service.ts     seul accès aux données
+```
+
+### Circulation des données
+
+```text
+olympic.json (plus tard : API REST)
+        │  HTTP
+        ▼
+   DataService
+        │  Observable
+        ▼
+DashboardPage / CountryDetailPage
+        │  @Input
+        ▼
+Header / PieChart / LineChart
+```
+
+Dans l'autre sens, un clic sur une part du camembert remonte par un `@Output` jusqu'à `DashboardPage`, qui navigue vers `/country/:id`.
+
+### Déplacement des éléments existants
+
+| Aujourd'hui | Demain |
+| --- | --- |
+| `pages/home/home.component.*` | `pages/dashboard/dashboard.page.*` |
+| `pages/country/country.component.*` | `pages/country-detail/country-detail.page.*` |
+| Appels HTTP et calculs dans les pages | `services/data.service.ts` |
+| URL dupliquée, couleurs en dur | `app.constants.ts` |
+| En-tête dupliqué | `components/header/` |
+| Code Chart.js dans les pages | `components/pie-chart/`, `components/line-chart/` |
+| `any` | `models/` |
+| Route `country/:countryName` | Route `country/:id` |
+| `pages/not-found/`, `assets/mock/olympic.json` | Inchangés |
+
+### Patterns retenus
+
+- **Singleton** : `DataService` est déclaré en `providedIn: 'root'`. Toute l'application partage la même instance, donc une seule source de données et une seule lecture du JSON.
+- **Séparation composant / service** : les composants affichent, le service fournit les données. Chaque élément a un seul rôle et une seule raison de changer.
+- **Conteneur / présentation** : les pages récupèrent et préparent les données, les composants de `components/` les reçoivent en `@Input`. Ils restent ainsi réutilisables.
+- **Observer** : les pages observent la route et les données avec RxJS. Quand le pays change dans l'URL, tout se recalcule, ce qui corrige le bug de l'historique.
+
+### Préparation au back-end
+
+Toutes les données passent par `DataService`, et ses méthodes renvoient des `Observable`. Pour brancher une API REST, il suffira de modifier le service : les pages et les composants ne sauront pas que la source a changé.
+
+### Réponse aux problèmes de l'étape 1
+
+| Problème | Réponse |
+| --- | --- |
+| 1. Responsabilités mal séparées | `DataService`, `HeaderComponent`, composants de graphique |
+| 2. Typage | Interfaces dans `models/` |
+| 3. Observables | Route et données reliées dans un même flux |
+| 4. Bugs et états | Route par `id`, vérification du pays et `ngOnDestroy` dès le refactoring ; messages d'état avec l'interface |
+| 5. Code à nettoyer | Supprimé pendant le refactoring |
+| 6. Responsive et accessibilité | Traités avec l'interface |
