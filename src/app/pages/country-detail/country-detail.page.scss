@@ -1,0 +1,20 @@
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.chart {
+  width: 50%;
+}
+
+@media screen and (max-width: 1000px) {
+  .chart {
+    width: 100%;
+  }
+}
+
+.back {
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+}
