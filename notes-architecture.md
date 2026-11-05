@@ -3,6 +3,7 @@
 ## Étape 1 : analyse du starter code
 
 Méthode : lecture de `src/app`, `ng serve`, essais dans le navigateur à 1440, 900 et 375 px.
+Les fichiers et les lignes cités décrivent le starter avant le refactoring (commit `67c074f`) : `home.component.ts` et `country.component.ts` n'existent plus aujourd'hui.
 
 ### 1. Responsabilités mal séparées
 
@@ -135,7 +136,7 @@ Dans l'autre sens, un clic sur une part du camembert remonte par un `@Output` ju
 
 ### Préparation au back-end
 
-Toutes les données passent par `DataService`, et ses méthodes renvoient des `Observable`. Pour brancher une API REST, il suffira de modifier le service : les pages et les composants ne sauront pas que la source a changé.
+Toutes les données passent par `DataService`, et ses méthodes de lecture (`getOlympics`, `getOlympicById`) renvoient des `Observable`. Pour brancher une API REST, il suffira de modifier le service : les pages et les composants ne sauront pas que la source a changé.
 
 ### Réponse aux problèmes de l'étape 1
 
