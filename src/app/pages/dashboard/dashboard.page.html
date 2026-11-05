@@ -1,0 +1,6 @@
+<h2>Olympic games app</h2>
+<hr />
+@if (view$ | async; as view) {
+<app-header title="Medals per Country" [indicators]="view.indicators" />
+<app-pie-chart [labels]="view.countries" [values]="view.medals" (sliceClick)="openCountry(view.countryIds[$event])" />
+}
