@@ -1,4 +1,5 @@
 export const OLYMPICS_URL = 'assets/mock/olympic.json';
 
 export const CHART_COLOR = '#0b868f';
-export const PIE_COLORS = ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'];
+/** Couleurs des maquettes, dans l'ordre des pays du fichier de données. */
+export const PIE_COLORS = ['#956065', '#b8cbe7', '#89a1db', '#793d52', '#9780a1', '#bfe0f1'];

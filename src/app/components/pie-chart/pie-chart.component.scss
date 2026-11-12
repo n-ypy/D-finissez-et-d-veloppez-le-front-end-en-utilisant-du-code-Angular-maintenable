@@ -1,0 +1,100 @@
+@use '../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+}
+
+// Mobile et tablette : le graphique, puis la légende en dessous.
+.pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+// La taille vient du CSS : Chart.js ne fait que remplir ce cadre.
+.pie__chart {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
+}
+
+// Mobile : une liste pleine largeur, facile à toucher.
+.pie__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-background);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+.legend-item__swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.legend-item__value {
+  margin-left: auto;
+  color: var(--color-text-muted);
+}
+
+// Tablette : le graphique en pleine largeur, la légende en lignes.
+@media (min-width: bp.$tablet-min) {
+  .pie__legend {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: none;
+  }
+
+  .legend-item {
+    width: auto;
+  }
+}
+
+// Desktop : le graphique et la légende côte à côte.
+@media (min-width: bp.$desktop-min) {
+  .pie {
+    flex-direction: row;
+    justify-content: center;
+    gap: 48px;
+  }
+
+  .pie__chart {
+    flex: 0 1 460px;
+  }
+
+  .pie__legend {
+    flex-direction: column;
+    width: auto;
+  }
+
+  .legend-item {
+    width: 100%;
+  }
+}

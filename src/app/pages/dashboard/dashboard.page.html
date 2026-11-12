@@ -2,5 +2,5 @@
 <hr />
 @if (view$ | async; as view) {
 <app-header title="Medals per Country" [indicators]="view.indicators" />
-<app-pie-chart [slices]="view.slices" (sliceClick)="openCountry($event)" />
+<app-pie-chart [slices]="view.slices" unit="medals" (sliceClick)="openCountry($event)" />
 }

@@ -11,34 +11,50 @@ import {
 } from '@angular/core';
 import Chart from 'chart.js/auto';
 
-import { PIE_COLORS } from '../../app.constants';
+import { CHART_COLOR, PIE_COLORS } from '../../app.constants';
 import { PieSlice } from '../../models/pie-slice.model';
+
+interface LegendItem extends PieSlice {
+  color: string;
+}
 
 @Component({
   selector: 'app-pie-chart',
   imports: [],
-  template: '<canvas #canvas></canvas>',
-  styles: ':host { display: block; position: relative; aspect-ratio: 2.5; min-height: 0; }',
+  templateUrl: './pie-chart.component.html',
+  styleUrl: './pie-chart.component.scss',
 })
 export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) slices!: PieSlice[];
+  /** Unité des valeurs, affichée dans l'infobulle, la légende et la description (ex. « medals »). */
+  @Input({ required: true }) unit!: string;
 
-  /** Émet l'id de la part cliquée. */
+  /** Émet l'id de la part choisie, sur le graphique ou dans la légende. */
   @Output() sliceClick = new EventEmitter<number>();
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
 
+  legend: LegendItem[] = [];
+  /** Contenu du graphique en texte, pour les lecteurs d'écran. */
+  description = '';
+
   private chart?: Chart<'pie', number[], string>;
 
-  ngAfterViewInit(): void {
-    this.render();
-  }
-
   ngOnChanges(): void {
+    this.legend = this.slices.map((slice, index) => ({
+      ...slice,
+      color: PIE_COLORS[index % PIE_COLORS.length],
+    }));
+    this.description = this.legend.map((item) => `${item.label}: ${item.value} ${this.unit}`).join(', ');
+
     // Au premier passage, le canvas n'existe pas encore : ngAfterViewInit s'en charge.
     if (this.canvas) {
       this.render();
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.render();
   }
 
   ngOnDestroy(): void {
@@ -50,25 +66,39 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.chart = new Chart(this.canvas.nativeElement, {
       type: 'pie',
       data: {
-        labels: this.slices.map((slice) => slice.label),
+        labels: this.legend.map((item) => item.label),
         datasets: [
           {
-            label: 'Medals',
-            data: this.slices.map((slice) => slice.value),
-            backgroundColor: PIE_COLORS,
-            hoverOffset: 4,
+            label: this.unit,
+            data: this.legend.map((item) => item.value),
+            backgroundColor: this.legend.map((item) => item.color),
+            hoverOffset: 8,
           },
         ],
       },
       options: {
         maintainAspectRatio: false,
+        plugins: {
+          // La légende est en HTML (voir le template) pour être cliquable au clavier.
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: CHART_COLOR,
+            displayColors: false,
+            callbacks: {
+              title: (items) => items[0]?.label ?? '',
+              label: (item) => `${item.formattedValue} ${this.unit}`,
+            },
+          },
+        },
         onClick: (_event, elements) => {
           if (elements.length > 0) {
-            this.sliceClick.emit(this.slices[elements[0].index].id);
+            this.sliceClick.emit(this.legend[elements[0].index].id);
           }
+        },
+        onHover: (_event, elements) => {
+          this.canvas.nativeElement.style.cursor = elements.length > 0 ? 'pointer' : 'default';
         },
       },
     });
   }
 }
-

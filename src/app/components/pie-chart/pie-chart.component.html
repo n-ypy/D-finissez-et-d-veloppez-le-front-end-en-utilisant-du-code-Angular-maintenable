@@ -1,0 +1,16 @@
+<div class="pie">
+  <div class="pie__chart">
+    <canvas #canvas role="img" [attr.aria-label]="description"></canvas>
+  </div>
+  <ul class="pie__legend">
+    @for (item of legend; track item.id) {
+    <li>
+      <button type="button" class="legend-item" (click)="sliceClick.emit(item.id)">
+        <span class="legend-item__swatch" [style.background-color]="item.color" aria-hidden="true"></span>
+        <span class="legend-item__label">{{ item.label }}</span>
+        <span class="legend-item__value">{{ item.value }} {{ unit }}</span>
+      </button>
+    </li>
+    }
+  </ul>
+</div>
