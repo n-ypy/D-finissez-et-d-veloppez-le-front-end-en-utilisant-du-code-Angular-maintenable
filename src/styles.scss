@@ -1,4 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
 :root {
   --color-primary: #0b868f;
+  --color-text: #1f1f1f;
+  --color-text-muted: #595959;
+  --color-border: #c9d1d9;
+  --color-background: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
 }

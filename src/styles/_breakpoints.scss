@@ -1,0 +1,4 @@
+// Points de rupture des spécifications : mobile ≤ 767px, tablette de 768 à 1199px, desktop ≥ 1200px.
+// Les styles sont écrits pour le mobile, puis complétés avec `min-width`.
+$tablet-min: 768px;
+$desktop-min: 1200px;

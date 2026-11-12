@@ -1,0 +1,13 @@
+@use '../styles/breakpoints' as bp;
+
+.container {
+  max-width: bp.$desktop-min;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+@media (min-width: bp.$tablet-min) {
+  .container {
+    padding: 24px;
+  }
+}
