@@ -17,7 +17,7 @@ DashboardPage / CountryDetailPage     préparent les données d'une page
 Header / PieChart / LineChart         affichent
 ```
 
-Les données descendent du service vers les composants. Dans l'autre sens, un clic sur une part du camembert remonte par un `@Output` jusqu'à `DashboardPage`, qui navigue vers `/country/:id`.
+Les données descendent du service vers les composants. Dans l'autre sens, un clic sur une part du camembert remonte l'id du pays par un `@Output` jusqu'à `DashboardPage`, qui navigue vers `/country/:id`.
 
 ## Arborescence
 
@@ -34,7 +34,8 @@ src/app/
 ├── models/             interfaces TypeScript
 │   ├── indicator.model.ts
 │   ├── olympic.model.ts
-│   └── participation.model.ts
+│   ├── participation.model.ts
+│   └── pie-slice.model.ts
 ├── pages/              composants liés à une route
 │   ├── country-detail/
 │   ├── dashboard/
@@ -53,7 +54,7 @@ Les composants sont standalone : chacun déclare ce qu'il utilise dans ses `impo
 | `CountryDetailPage` | `pages/country-detail/` | Page d'un pays : indicateurs, courbe et lien de retour. Redirige vers `/not-found` si le pays n'existe pas. |
 | `NotFoundComponent` | `pages/not-found/` | Page affichée pour une route inconnue. |
 | `HeaderComponent` | `components/header/` | Affiche un titre et une liste d'indicateurs reçus en `@Input`. |
-| `PieChartComponent` | `components/pie-chart/` | Dessine un camembert. Reçoit `labels` et `values`, et signale un clic par `sliceClick`. |
+| `PieChartComponent` | `components/pie-chart/` | Dessine un camembert. Reçoit des `slices` (id, libellé, valeur) et renvoie l'id de la part cliquée par `sliceClick`. |
 | `LineChartComponent` | `components/line-chart/` | Dessine une courbe. Reçoit `labels` et `values`. |
 
 Les pages sont des conteneurs : elles récupèrent les données et les préparent. Les composants de `components/` ne connaissent ni le service, ni le routeur, et restent donc réutilisables.

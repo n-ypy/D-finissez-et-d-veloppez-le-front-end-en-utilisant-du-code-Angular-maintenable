@@ -12,6 +12,7 @@ import {
 import Chart from 'chart.js/auto';
 
 import { PIE_COLORS } from '../../app.constants';
+import { PieSlice } from '../../models/pie-slice.model';
 
 @Component({
   selector: 'app-pie-chart',
@@ -20,9 +21,9 @@ import { PIE_COLORS } from '../../app.constants';
   styles: ':host { display: block; position: relative; aspect-ratio: 2.5; min-height: 0; }',
 })
 export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input({ required: true }) labels!: string[];
-  @Input({ required: true }) values!: number[];
+  @Input({ required: true }) slices!: PieSlice[];
 
+  /** Émet l'id de la part cliquée. */
   @Output() sliceClick = new EventEmitter<number>();
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
@@ -49,11 +50,11 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.chart = new Chart(this.canvas.nativeElement, {
       type: 'pie',
       data: {
-        labels: this.labels,
+        labels: this.slices.map((slice) => slice.label),
         datasets: [
           {
             label: 'Medals',
-            data: this.values,
+            data: this.slices.map((slice) => slice.value),
             backgroundColor: PIE_COLORS,
             hoverOffset: 4,
           },
@@ -63,7 +64,7 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
         maintainAspectRatio: false,
         onClick: (_event, elements) => {
           if (elements.length > 0) {
-            this.sliceClick.emit(elements[0].index);
+            this.sliceClick.emit(this.slices[elements[0].index].id);
           }
         },
       },

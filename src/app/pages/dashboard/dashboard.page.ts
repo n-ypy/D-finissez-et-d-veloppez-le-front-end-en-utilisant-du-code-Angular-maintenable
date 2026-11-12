@@ -7,13 +7,12 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { PieChartComponent } from '../../components/pie-chart/pie-chart.component';
 import { Indicator } from '../../models/indicator.model';
 import { Olympic } from '../../models/olympic.model';
+import { PieSlice } from '../../models/pie-slice.model';
 import { DataService } from '../../services/data.service';
 
 interface DashboardView {
   indicators: Indicator[];
-  countryIds: number[];
-  countries: string[];
-  medals: number[];
+  slices: PieSlice[];
 }
 
 @Component({
@@ -42,11 +41,11 @@ export class DashboardPage {
         { label: 'Number of countries', value: olympics.length },
         { label: 'Number of JOs', value: this.dataService.countEditions(olympics) },
       ],
-      countryIds: olympics.map((o) => o.id),
-      countries: olympics.map((o) => o.country),
-      medals: olympics.map((o) => this.dataService.getTotalMedals(o)),
+      slices: olympics.map((o) => ({
+        id: o.id,
+        label: o.country,
+        value: this.dataService.getTotalMedals(o),
+      })),
     };
   }
 }
-
-
