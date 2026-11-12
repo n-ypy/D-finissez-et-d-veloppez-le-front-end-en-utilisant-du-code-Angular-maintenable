@@ -1,29 +1,131 @@
-# OlympicGamesStarter
+![Bannière TéléSport](docs/images/telesport-banner.png)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+# TéléSport, Jeux Olympiques
 
-Don't forget to install your node_modules before starting (`npm install`).
+Application Angular qui présente les médailles olympiques par pays. Un tableau de bord affiche le total des médailles de chaque pays dans un camembert, et une page de détail montre les résultats d'un pays à chaque édition. Les données sont simulées par un fichier JSON.
 
-## Development server
+L'interface est en anglais, comme les maquettes.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Sommaire
 
-## Build
+- [Fonctionnalités](#fonctionnalités)
+- [Prérequis](#prérequis)
+- [Installation et lancement](#installation-et-lancement)
+- [Commandes utiles](#commandes-utiles)
+- [Structure du projet](#structure-du-projet)
+- [Choix techniques](#choix-techniques)
+- [Gestion des erreurs](#gestion-des-erreurs)
+- [Responsive et accessibilité](#responsive-et-accessibilité)
+- [Tests](#tests)
+- [Captures d'écran](#captures-décran)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Fonctionnalités
 
-## Where to start
+**Tableau de bord** (`/`)
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+- Nombre d'éditions des Jeux Olympiques et nombre de pays.
+- Camembert du total des médailles par pays, avec une infobulle au survol.
+- Un clic sur une part du camembert ou sur un pays de la légende ouvre la page de ce pays.
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+**Page d'un pays** (`/country/:id`)
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+- Nombre de participations, total des médailles et total des athlètes.
+- Courbe du nombre de médailles à chaque édition.
+- Bouton « Back » pour revenir au tableau de bord.
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+**Page introuvable**
 
-You're now ready to implement the requested features.
+- Un pays inconnu (par exemple `/country/999`) ou une adresse inconnue affiche « Page not found », avec un bouton vers le tableau de bord.
 
-Good luck!
+## Prérequis
+
+| Outil | Version |
+| --- | --- |
+| Node.js | 22 (à partir de 22.22.3), 24 (à partir de 24.15) ou 26 et plus, comme l'exige Angular 22 |
+| npm | Celui fourni avec Node.js |
+| Angular CLI | 22, facultatif : les commandes `npm` utilisent la version installée dans le projet |
+
+## Installation et lancement
+
+```bash
+git clone https://github.com/n-ypy/D-finissez-et-d-veloppez-le-front-end-en-utilisant-du-code-Angular-maintenable.git
+cd D-finissez-et-d-veloppez-le-front-end-en-utilisant-du-code-Angular-maintenable
+npm install
+npm start
+```
+
+Ouvrir ensuite http://localhost:4200/. L'application se recharge à chaque modification d'un fichier.
+
+## Commandes utiles
+
+| Commande | Rôle |
+| --- | --- |
+| `npm start` | Serveur de développement sur http://localhost:4200/ |
+| `npm run build` | Build de production dans `dist/telesport/` |
+| `npm run watch` | Build de développement, relancé à chaque modification |
+| `npm test` | Tests unitaires avec Vitest, relancés à chaque modification |
+| `npm test -- --watch=false` | Tests unitaires, une seule fois |
+
+## Structure du projet
+
+```text
+src/
+├── app/
+│   ├── components/       affichage réutilisable : en-tête, graphiques, messages d'état
+│   ├── models/           interfaces TypeScript des données
+│   ├── pages/            une page par route : tableau de bord, détail d'un pays, page introuvable
+│   ├── services/         DataService, seul accès aux données
+│   ├── utils/            opérateur RxJS des états d'affichage
+│   ├── app.config.ts     routeur et HttpClient
+│   ├── app.constants.ts  URL des données, couleurs des graphiques
+│   └── app.routes.ts     routes de l'application
+├── assets/mock/          données simulées (olympic.json)
+├── styles/               points de rupture du responsive
+└── styles.scss           styles globaux : couleurs, boutons, focus
+docs/                     bannière et captures d'écran
+```
+
+Le rôle de chaque composant, le service et le parcours des données sont décrits dans [ARCHITECTURE.md](ARCHITECTURE.md). L'analyse du code de départ se trouve dans [notes-architecture.md](notes-architecture.md).
+
+## Choix techniques
+
+- **Angular 22, composants standalone.** Chaque composant déclare ce qu'il utilise, sans `NgModule`.
+- **Un seul service de données.** `DataService` lit le fichier JSON une seule fois et fait tous les calculs. Les pages préparent l'affichage, les composants de `components/` se contentent d'afficher. Pour passer à une vraie API, seul le service changera.
+- **Observables lus avec le pipe `async`.** Aucun `subscribe` manuel dans les composants, donc aucun abonnement à détruire à la main. Les graphiques Chart.js sont détruits dans `ngOnDestroy`.
+- **Page de détail pilotée par l'URL.** L'identifiant vient de `ActivatedRoute`, la page suit donc l'URL, y compris avec les boutons Précédent et Suivant du navigateur.
+- **Chart.js allégé.** Chaque graphique n'enregistre que ce qu'il utilise, au lieu de `chart.js/auto`. Le bundle initial pèse 472 kB, sous le budget de 500 kB.
+- **Typage strict.** Les données sont décrites par les interfaces de `models/`, sans aucun `any`.
+
+## Gestion des erreurs
+
+| Situation | Ce que voit l'utilisateur |
+| --- | --- |
+| Chargement en cours | Un indicateur de chargement |
+| Données impossibles à charger ou mal formées | « We couldn't load the data. Please try again later. », avec un bouton « Try again » sur le tableau de bord |
+| Aucune donnée | « No data available. » à la place du graphique |
+| Pays inconnu ou adresse inconnue | La page « Page not found » |
+
+Aucun message technique n'est affiché. Pour reproduire une erreur : dans les DevTools du navigateur, onglet *Network*, clic droit sur `olympic.json`, puis *Block request URL*.
+
+## Responsive et accessibilité
+
+- Trois mises en page, d'après les spécifications : mobile jusqu'à 767 px, tablette de 768 à 1199 px, desktop à partir de 1200 px.
+- Contrastes de niveau AA, contour de focus visible et zones cliquables d'au moins 44 px.
+- La légende du camembert est faite de boutons HTML : un pays s'ouvre aussi au clavier.
+- Chaque graphique a une description textuelle pour les lecteurs d'écran (`role="img"` et `aria-label`).
+
+## Tests
+
+Les 20 tests unitaires couvrent `DataService` (calculs, cache, nouvel essai après une erreur), l'opérateur `withLoadState`, le composant `StatusMessage` et les états des pages : chargement, erreur, données vides, pays inconnu. Le dessin des graphiques se vérifie dans le navigateur, car l'environnement de test n'a pas de canvas.
+
+## Captures d'écran
+
+**Tableau de bord, desktop et mobile**
+
+<img src="docs/screenshots/dashboard-desktop.png" alt="Tableau de bord sur desktop" width="620"> <img src="docs/screenshots/dashboard-mobile.png" alt="Tableau de bord sur mobile" width="190">
+
+**Page d'un pays, desktop et mobile**
+
+<img src="docs/screenshots/country-detail-desktop.png" alt="Page d'un pays sur desktop" width="620"> <img src="docs/screenshots/country-detail-mobile.png" alt="Page d'un pays sur mobile" width="190">
+
+Les captures en tablette, la page introuvable et l'infobulle du camembert sont dans [docs/screenshots](docs/screenshots).
