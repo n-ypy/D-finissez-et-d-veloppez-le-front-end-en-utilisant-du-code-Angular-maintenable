@@ -1,7 +1,21 @@
-.center {
-  min-height: 60vh;
+.not-found {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  gap: 16px;
+  min-height: 60vh;
+  text-align: center;
+}
+
+// Couleur principale sur blanc : 4,4:1, suffisant (AA) pour un texte de 24px et plus.
+.not-found__title {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.not-found__text {
+  margin: 0;
+  color: var(--color-text-muted);
 }

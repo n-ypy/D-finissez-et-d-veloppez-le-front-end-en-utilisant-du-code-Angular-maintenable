@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { NotFoundComponent } from './not-found.component';
 
 describe('NotFoundComponent', () => {
-  let component: NotFoundComponent;
   let fixture: ComponentFixture<NotFoundComponent>;
 
   beforeEach(async () => {
@@ -15,12 +14,13 @@ describe('NotFoundComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotFoundComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('explains the problem and links back to the dashboard', () => {
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('h1')?.textContent).toBe('Page not found');
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/');
   });
 });
-
