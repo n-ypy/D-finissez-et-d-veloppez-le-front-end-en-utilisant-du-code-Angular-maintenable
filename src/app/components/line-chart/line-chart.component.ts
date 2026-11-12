@@ -27,8 +27,7 @@ Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearS
   selector: 'app-line-chart',
   imports: [],
   template: '<canvas #canvas role="img" [attr.aria-label]="description"></canvas>',
-  // La taille vient du CSS : Chart.js ne fait que remplir ce cadre.
-  styles: ':host { display: block; position: relative; aspect-ratio: 2.5; min-height: 0; }',
+  styleUrl: './line-chart.component.scss',
 })
 export class LineChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) labels!: number[];

@@ -3,7 +3,5 @@
 </div>
 @if (view$ | async; as view) {
 <app-header [title]="view.country" [indicators]="view.indicators" />
-<div class="chart-wrapper">
-  <app-line-chart class="chart" [labels]="view.years" [values]="view.medals" unit="medals" />
-</div>
+<app-line-chart class="chart" [labels]="view.years" [values]="view.medals" unit="medals" />
 }

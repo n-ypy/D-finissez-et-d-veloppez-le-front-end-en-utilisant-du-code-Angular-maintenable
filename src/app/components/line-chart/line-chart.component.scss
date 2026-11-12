@@ -1,0 +1,22 @@
+@use '../../../styles/breakpoints' as bp;
+
+// La taille vient du CSS : Chart.js ne fait que remplir ce cadre.
+// Plus haut sur mobile, pour que la courbe reste lisible sur un écran étroit.
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+@media (min-width: bp.$tablet-min) {
+  :host {
+    aspect-ratio: 2;
+  }
+}
+
+@media (min-width: bp.$desktop-min) {
+  :host {
+    aspect-ratio: 2.5;
+  }
+}
