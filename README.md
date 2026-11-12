@@ -17,6 +17,7 @@ L'interface est en anglais, comme les maquettes.
 - [Gestion des erreurs](#gestion-des-erreurs)
 - [Responsive et accessibilité](#responsive-et-accessibilité)
 - [Tests](#tests)
+- [Limites](#limites)
 - [Captures d'écran](#captures-décran)
 
 ## Fonctionnalités
@@ -117,6 +118,15 @@ Aucun message technique n'est affiché. Pour reproduire une erreur : dans les De
 ## Tests
 
 Les 20 tests unitaires couvrent `DataService` (calculs, cache, nouvel essai après une erreur), l'opérateur `withLoadState`, le composant `StatusMessage` et les états des pages : chargement, erreur, données vides, pays inconnu. Le dessin des graphiques se vérifie dans le navigateur, car l'environnement de test n'a pas de canvas.
+
+## Limites
+
+- Les données viennent d'un fichier JSON local, il n'y a pas encore d'API. Pour en brancher une, seul `DataService` devra changer.
+- Le fichier est lu une seule fois. Si les données changent côté serveur, il faut recharger la page pour les voir.
+- Le JSON ne donne qu'un total de médailles par édition. La répartition entre or, argent et bronze et le détail par sport ne sont donc pas affichés.
+- La maquette écrit le nom des pays autour du camembert. Ici, ils sont dans une légende à côté du graphique, plus lisible sur mobile et utilisable au clavier.
+- Il n'y a pas de tests de bout en bout. Le dessin des graphiques et la navigation complète se vérifient à la main dans le navigateur.
+- L'interface existe seulement en anglais.
 
 ## Captures d'écran
 
