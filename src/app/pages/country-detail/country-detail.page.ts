@@ -5,41 +5,50 @@ import { filter, map, Observable, switchMap, tap } from 'rxjs';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { LineChartComponent } from '../../components/line-chart/line-chart.component';
+import { StatusMessageComponent } from '../../components/status-message/status-message.component';
 import { Indicator } from '../../models/indicator.model';
+import { LoadState } from '../../models/load-state.model';
 import { Olympic } from '../../models/olympic.model';
 import { DataService } from '../../services/data.service';
+import { withLoadState } from '../../utils/with-load-state';
 
 interface CountryDetailView {
   country: string;
   indicators: Indicator[];
   years: number[];
   medals: number[];
+  hasParticipations: boolean;
 }
 
 @Component({
   selector: 'app-country-detail',
-  imports: [AsyncPipe, HeaderComponent, LineChartComponent, RouterLink],
+  imports: [AsyncPipe, HeaderComponent, LineChartComponent, RouterLink, StatusMessageComponent],
   templateUrl: './country-detail.page.html',
   styleUrl: './country-detail.page.scss',
 })
 export class CountryDetailPage {
-  readonly view$: Observable<CountryDetailView>;
+  readonly state$: Observable<LoadState<CountryDetailView>>;
 
   constructor(
     route: ActivatedRoute,
     router: Router,
     private readonly dataService: DataService,
   ) {
-    this.view$ = route.paramMap.pipe(
+    this.state$ = route.paramMap.pipe(
       map((params) => Number(params.get('id'))),
-      switchMap((id) => this.dataService.getOlympicById(id)),
-      tap((olympic) => {
-        if (!olympic) {
-          router.navigate(['/not-found'], { replaceUrl: true });
-        }
-      }),
-      filter((olympic) => olympic !== undefined),
-      map((olympic) => this.toView(olympic)),
+      // Les erreurs sont traitées dans le switchMap : après une erreur, un changement d'URL recharge encore.
+      switchMap((id) =>
+        this.dataService.getOlympicById(id).pipe(
+          tap((olympic) => {
+            if (!olympic) {
+              router.navigate(['/not-found'], { replaceUrl: true });
+            }
+          }),
+          filter((olympic) => olympic !== undefined),
+          map((olympic) => this.toView(olympic)),
+          withLoadState(),
+        ),
+      ),
     );
   }
 
@@ -53,6 +62,7 @@ export class CountryDetailPage {
       ],
       years: olympic.participations.map((p) => p.year),
       medals: olympic.participations.map((p) => p.medalsCount),
+      hasParticipations: olympic.participations.length > 0,
     };
   }
 }

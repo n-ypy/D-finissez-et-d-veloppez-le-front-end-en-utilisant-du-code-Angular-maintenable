@@ -1,7 +1,15 @@
 <div class="back">
   <a class="button" routerLink="/" aria-label="Back to the dashboard"><span aria-hidden="true">←</span> Back</a>
 </div>
-@if (view$ | async; as view) {
-<app-header [title]="view.country" [indicators]="view.indicators" />
-<app-line-chart class="chart" [labels]="view.years" [values]="view.medals" unit="medals" />
+@if (state$ | async; as state) {
+  @if (state.status === 'ready') {
+    <app-header [title]="state.data.country" [indicators]="state.data.indicators" />
+    @if (state.data.hasParticipations) {
+      <app-line-chart class="chart" [labels]="state.data.years" [values]="state.data.medals" unit="medals" />
+    } @else {
+      <app-status-message type="empty" />
+    }
+  } @else {
+    <app-status-message [type]="state.status" />
+  }
 }
