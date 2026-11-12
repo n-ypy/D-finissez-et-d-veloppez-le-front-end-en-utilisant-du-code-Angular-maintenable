@@ -10,7 +10,6 @@ import {
 import {
   CategoryScale,
   Chart,
-  Legend,
   LinearScale,
   LineController,
   LineElement,
@@ -21,20 +20,26 @@ import {
 import { CHART_COLOR } from '../../app.constants';
 
 // Enregistre seulement ce que ce graphique utilise, au lieu de tout Chart.js (`chart.js/auto`).
-Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
+// Pas de légende : il n'y a qu'une série.
+Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip);
 
 @Component({
   selector: 'app-line-chart',
   imports: [],
-  template: '<canvas #canvas></canvas>',
+  template: '<canvas #canvas role="img" [attr.aria-label]="description"></canvas>',
   // La taille vient du CSS : Chart.js ne fait que remplir ce cadre.
   styles: ':host { display: block; position: relative; aspect-ratio: 2.5; min-height: 0; }',
 })
 export class LineChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) labels!: number[];
   @Input({ required: true }) values!: number[];
+  /** Unité des valeurs, affichée dans l'infobulle et la description (ex. « medals »). */
+  @Input({ required: true }) unit!: string;
 
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+
+  /** Contenu du graphique en texte, pour les lecteurs d'écran. */
+  description = '';
 
   private chart?: Chart<'line', number[], number>;
 
@@ -43,6 +48,10 @@ export class LineChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
+    this.description = this.labels
+      .map((label, index) => `${label}: ${this.values[index]} ${this.unit}`)
+      .join(', ');
+
     // Au premier passage, le canvas n'existe pas encore : ngAfterViewInit s'en charge.
     if (this.canvas) {
       this.render();
@@ -61,16 +70,30 @@ export class LineChartComponent implements AfterViewInit, OnChanges, OnDestroy {
         labels: this.labels,
         datasets: [
           {
-            label: 'Medals',
+            label: this.unit,
             data: this.values,
+            borderColor: CHART_COLOR,
             backgroundColor: CHART_COLOR,
+            pointRadius: 4,
+            pointHoverRadius: 6,
           },
         ],
       },
       options: {
         maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            backgroundColor: CHART_COLOR,
+            displayColors: false,
+            callbacks: {
+              label: (item) => `${item.formattedValue} ${this.unit}`,
+            },
+          },
+        },
         scales: {
-          x: { title: { display: true, text: 'Date' } },
+          x: { title: { display: true, text: 'Dates' } },
+          // Partir de zéro garde les écarts entre éditions à leur vraie proportion.
+          y: { beginAtZero: true, ticks: { precision: 0 } },
         },
       },
     });

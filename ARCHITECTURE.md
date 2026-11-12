@@ -55,7 +55,7 @@ Les composants sont standalone : chacun déclare ce qu'il utilise dans ses `impo
 | `NotFoundComponent` | `pages/not-found/` | Page affichée pour une route inconnue. |
 | `HeaderComponent` | `components/header/` | Affiche un titre et une liste d'indicateurs reçus en `@Input`. |
 | `PieChartComponent` | `components/pie-chart/` | Dessine un camembert. Reçoit des `slices` (id, libellé, valeur) et renvoie l'id de la part cliquée par `sliceClick`. |
-| `LineChartComponent` | `components/line-chart/` | Dessine une courbe. Reçoit `labels` et `values`. |
+| `LineChartComponent` | `components/line-chart/` | Dessine une courbe. Reçoit `labels`, `values` et l'unité des valeurs (`unit`). |
 
 Les pages sont des conteneurs : elles récupèrent les données et les préparent. Les composants de `components/` ne connaissent ni le service, ni le routeur, et restent donc réutilisables.
 
