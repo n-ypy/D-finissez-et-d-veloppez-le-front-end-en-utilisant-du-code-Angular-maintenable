@@ -48,8 +48,8 @@ export class CountryDetailPage {
       country: olympic.country,
       indicators: [
         { label: 'Number of entries', value: olympic.participations.length },
-        { label: 'Total Number of medals', value: this.dataService.getTotalMedals(olympic) },
-        { label: 'Total Number of athletes', value: this.dataService.getTotalAthletes(olympic) },
+        { label: 'Total number of medals', value: this.dataService.getTotalMedals(olympic) },
+        { label: 'Total number of athletes', value: this.dataService.getTotalAthletes(olympic) },
       ],
       years: olympic.participations.map((p) => p.year),
       medals: olympic.participations.map((p) => p.medalsCount),
