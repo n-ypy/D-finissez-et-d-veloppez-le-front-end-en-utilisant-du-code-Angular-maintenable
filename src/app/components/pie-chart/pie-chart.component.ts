@@ -9,10 +9,13 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import Chart from 'chart.js/auto';
+import { ArcElement, Chart, PieController, Tooltip } from 'chart.js';
 
 import { CHART_COLOR, PIE_COLORS } from '../../app.constants';
 import { PieSlice } from '../../models/pie-slice.model';
+
+// Enregistre seulement ce que ce graphique utilise, au lieu de tout Chart.js (`chart.js/auto`).
+Chart.register(PieController, ArcElement, Tooltip);
 
 interface LegendItem extends PieSlice {
   color: string;

@@ -7,9 +7,21 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import Chart from 'chart.js/auto';
+import {
+  CategoryScale,
+  Chart,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from 'chart.js';
 
 import { CHART_COLOR } from '../../app.constants';
+
+// Enregistre seulement ce que ce graphique utilise, au lieu de tout Chart.js (`chart.js/auto`).
+Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 @Component({
   selector: 'app-line-chart',
