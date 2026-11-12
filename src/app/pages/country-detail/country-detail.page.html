@@ -1,9 +1,9 @@
+<div class="back">
+  <a class="button" routerLink="/" aria-label="Back to the dashboard"><span aria-hidden="true">←</span> Back</a>
+</div>
 @if (view$ | async; as view) {
 <app-header [title]="view.country" [indicators]="view.indicators" />
 <div class="chart-wrapper">
   <app-line-chart class="chart" [labels]="view.years" [values]="view.medals" />
 </div>
 }
-<div class="back">
-  <a routerLink="/">Go back</a>
-</div>
