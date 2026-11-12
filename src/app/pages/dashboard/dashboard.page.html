@@ -1,8 +1,20 @@
-@if (view$ | async; as view) {
-<app-header title="Medals per Country" [indicators]="view.indicators" />
-<p class="intro">
-  TéléSport presents the results of the Olympic Games. The chart shows the total number of medals won by each
-  country across all editions. Select a country to see its entries, medals and athletes over time.
-</p>
-<app-pie-chart [slices]="view.slices" unit="medals" (sliceClick)="openCountry($event)" />
+@if (state$ | async; as state) {
+  @if (state.status === 'ready') {
+    <app-header title="Medals per Country" [indicators]="state.data.indicators" />
+    <p class="intro">
+      TéléSport presents the results of the Olympic Games. The chart shows the total number of medals won by each
+      country across all editions. Select a country to see its entries, medals and athletes over time.
+    </p>
+    @if (state.data.hasData) {
+      <app-pie-chart [slices]="state.data.slices" unit="medals" (sliceClick)="openCountry($event)" />
+    } @else {
+      <app-status-message type="empty" />
+    }
+  } @else if (state.status === 'error') {
+    <app-status-message type="error">
+      <button type="button" class="button" (click)="retry()">Try again</button>
+    </app-status-message>
+  } @else {
+    <app-status-message type="loading" />
+  }
 }
