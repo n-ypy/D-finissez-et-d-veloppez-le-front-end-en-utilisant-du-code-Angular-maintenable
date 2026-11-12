@@ -1,6 +1,8 @@
-<h2>Olympic games app</h2>
-<hr />
 @if (view$ | async; as view) {
 <app-header title="Medals per Country" [indicators]="view.indicators" />
+<p class="intro">
+  TéléSport presents the results of the Olympic Games. The chart shows the total number of medals won by each
+  country across all editions. Select a country to see its entries, medals and athletes over time.
+</p>
 <app-pie-chart [slices]="view.slices" unit="medals" (sliceClick)="openCountry($event)" />
 }

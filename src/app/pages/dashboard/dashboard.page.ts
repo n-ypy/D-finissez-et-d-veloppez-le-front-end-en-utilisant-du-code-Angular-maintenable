@@ -38,8 +38,8 @@ export class DashboardPage {
   private toView(olympics: Olympic[]): DashboardView {
     return {
       indicators: [
-        { label: 'Number of countries', value: olympics.length },
         { label: 'Number of JOs', value: this.dataService.countEditions(olympics) },
+        { label: 'Number of countries', value: olympics.length },
       ],
       slices: olympics.map((o) => ({
         id: o.id,
