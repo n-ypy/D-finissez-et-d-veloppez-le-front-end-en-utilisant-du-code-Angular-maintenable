@@ -96,6 +96,12 @@ src/app/
     └── data.service.ts     seul accès aux données
 ```
 
+### Schéma de l'arborescence
+
+![Schéma de l'arborescence de src/app : routes, pages, composants, service et source de données](docs/images/architecture.png)
+
+Chaque cadre correspond à un dossier de `src/app/`. Les flèches montrent qui utilise qui : le routeur ouvre une page, la page affiche des composants et lit ses données dans `DataService`, qui est le seul à lire le fichier JSON. Le schéma est généré avec Graphviz à partir de [docs/images/architecture.dot](docs/images/architecture.dot) : `dot -Tpng -Gdpi=150 docs/images/architecture.dot -o docs/images/architecture.png`.
+
 ### Circulation des données
 
 ```text

@@ -1,0 +1,49 @@
+digraph telesport {
+  rankdir=TB;
+  graph [fontname="DejaVu Sans", fontsize=13, nodesep=0.45, ranksep=0.9, pad=0.3, bgcolor="white", labelloc=t];
+  node  [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="white", color="#555555", margin="0.16,0.09"];
+  edge  [fontname="DejaVu Sans", fontsize=11, color="#555555", arrowsize=0.8];
+
+  subgraph cluster_root {
+    label="src/app/"; labeljust=l; style="rounded,filled"; fillcolor="#f4f4f4"; color="#999999"; margin=14;
+    app_comp   [label="app.component.*\nracine, <router-outlet>"];
+    app_routes [label="app.routes.ts\nliste des routes"];
+  }
+
+  subgraph cluster_pages {
+    label="pages/   (conteneurs : une page par route)"; labeljust=l; style="rounded,filled"; fillcolor="#dbeafe"; color="#3b82f6"; margin=14;
+    dash [label="dashboard/\nDashboardPage\nroute  /"];
+    det  [label="country-detail/\nCountryDetailPage\nroute  /country/:id"];
+    nf   [label="not-found/\nNotFoundComponent\nroute  /not-found  et  **"];
+  }
+
+  subgraph cluster_components {
+    label="components/   (affichage réutilisable)"; labeljust=l; style="rounded,filled"; fillcolor="#dcfce7"; color="#22c55e"; margin=14;
+    header [label="header/\nHeaderComponent"];
+    pie    [label="pie-chart/\nPieChartComponent"];
+    line   [label="line-chart/\nLineChartComponent"];
+    status [label="status-message/\nStatusMessageComponent"];
+  }
+
+  subgraph cluster_services {
+    label="services/"; labeljust=l; style="rounded,filled"; fillcolor="#ede9fe"; color="#8b5cf6"; margin=14;
+    ds [label="data.service.ts\nDataService\nseul accès aux données"];
+  }
+
+  json [label="assets/mock/olympic.json\n(plus tard : API REST)", shape=cylinder, fillcolor="#fde68a"];
+
+  legend [shape=note, style=filled, fillcolor="#fafafa", fontsize=11, label=
+    "Hors schéma, utilisés partout :\lmodels/  interfaces TypeScript (Olympic, Participation…)\lutils/  with-load-state.ts, opérateur RxJS des états\lapp.constants.ts  URL des données, couleurs\lapp.config.ts  routeur et HttpClient\l"];
+
+  app_comp -> app_routes;
+  app_routes -> dash; app_routes -> det; app_routes -> nf;
+
+  dash -> header [label=" @Input"]; dash -> pie [label=" @Input\n @Output"]; dash -> status;
+  det  -> header; det -> line; det -> status;
+
+  dash -> ds [label=" Observable"];
+  det  -> ds [label=" Observable"];
+  ds -> json [label=" HTTP"];
+
+  json -> legend [style=invis];
+}
