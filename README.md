@@ -121,11 +121,11 @@ Les 20 tests unitaires couvrent `DataService` (calculs, cache, nouvel essai apr�
 
 ## Limites
 
-- Les données viennent d'un fichier JSON local, il n'y a pas encore d'API. Pour en brancher une, seul `DataService` devra changer.
-- Le fichier est lu une seule fois. Si les données changent côté serveur, il faut recharger la page pour les voir.
+- Les données sont fictives : elles viennent d'un fichier JSON local (`src/assets/mock/olympic.json`), il n'y a pas encore d'API. Pour en brancher une, seul `DataService` devra changer.
+- Le cache `shareReplay(1)` n'est jamais rafraîchi. Le fichier est lu une seule fois, et la première réponse est gardée jusqu'au rechargement de la page : si les données changent côté serveur, il faut recharger la page pour les voir. Seule une erreur de lecture n'est pas gardée, l'accès suivant réessaie.
 - Le JSON ne donne qu'un total de médailles par édition. La répartition entre or, argent et bronze et le détail par sport ne sont donc pas affichés.
 - La maquette écrit le nom des pays autour du camembert. Ici, ils sont dans une légende à côté du graphique, plus lisible sur mobile et utilisable au clavier.
-- Il n'y a pas de tests de bout en bout. Le dessin des graphiques et la navigation complète se vérifient à la main dans le navigateur.
+- Les graphiques ne sont pas testés automatiquement : l'environnement de test n'a pas de canvas. Il n'y a pas non plus de tests de bout en bout, donc le dessin des graphiques et la navigation complète se vérifient à la main dans le navigateur.
 - L'interface existe seulement en anglais.
 
 ## Captures d'écran
